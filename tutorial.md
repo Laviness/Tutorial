@@ -246,9 +246,6 @@ Now you can change the action (which is 'pick' in default) to 'edit', 'squash' o
 This is a good way to manipulate you git add files to git index by typing 
 ```
 $git add -i
-```
-and returns
-```
 staged     unstaged path
 1:    unchanged        +4/-0 assets/stylesheets/style.css
 2:    unchanged      +23/-11 layout/book_index_template.html
@@ -262,15 +259,9 @@ staged     unstaged path
 What now>
 ```
 I dont know what exactly those commands means, so I type
+```8```or```help```then get
 ```
-8
-```
-or
-```
-help
-```
-then get
-```
+What now> help
 status        - show paths with changes
 update        - add working tree state to the staged set of changes
 revert        - revert staged set of changes back to the HEAD version
@@ -284,13 +275,7 @@ What now>
 ```
 
 Under this mode, you have many choices. When finish, type
-```
-7
-```
-or
-```
-q(quit)
-```
+```7```or```q(quit)```
 git commit you change. But remember Do NOT use
 ```
 $git commit -a
