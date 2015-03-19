@@ -1,5 +1,9 @@
 #Rebasing
 
+##What is Rebasing
+The ```merge``` and the ```rebase``` are the most common ways to integrate from one branch into another in Git. This tutorial will focus on ```rebase`` since ```merge``` have been taught in lab1-git. And you will learn how to do it, why it is a pretty amazing tool and in what cases you won't want to use it.
+
+##How to do Rebasing
 Assuming that you creat a branch 'mywork' on your remote branch 'master'.
 
 ```
@@ -42,7 +46,7 @@ $git rebase --abort
 
 
 
-#Inerteractive Rebasing -i
+##Inerteractive Rebasing -i
 Under this mode, you could rewrite your commits before pull request.(If I know this before my first commits, I would not have messed up my commits and had to delete the repo and forked again.) 
 It facilitates you to separate merge and re-order commit and remove commits that you have already pulled to your laptop.
 
@@ -79,7 +83,7 @@ That is to say, you have five commits and every one follow this format:
 Now you can change the action (which is 'pick' in default) to 'edit', 'squash' or delete the line that you dont want to push. When you quit the edit mode, git will apply the new commits.
 
 
-#Interactive Adding
+##Interactive Adding
 This is a good way to manipulate you git add files to git index by typing 
 ```
 $git add -i
@@ -133,6 +137,19 @@ git commit you change. But remember Do NOT use
 $git commit -a
 ```
 Otherwise all you have done above becomes nothing.
+
+##The Perils of Rebasing
+Ahh, but the bliss of rebasing isn't without its drawbacks, which can be summed up in a single line:
+
+###Do not rebase commits that exist outside your repository.
+
+If you follow our guideline, you'll be fine. If you don't, people will hate you, and you'll be scorned by friends and family.
+
+When you rebase stuff, you’re abandoning existing commits and creating new ones that are similar but different. If you push commits somewhere and others pull them down and base work on them, and then you rewrite those commits with```git rebase``` and push them up again, your collaborators will have to re-merge their work and things will get messy when you try to pull their work back into yours.
+
+Let’s look at an example of how rebasing work that you’ve made public can cause problems. Suppose you clone from a central server and then do some work off that. Your commit history looks like this:
+
+
 
 #Stashing
 
