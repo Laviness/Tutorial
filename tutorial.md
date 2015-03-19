@@ -276,6 +276,7 @@ What now>
 
 Under this mode, you have many choices. When finish, type
 ```7```or```q(quit)```
+```
 git commit you change. But remember Do NOT use
 ```
 $git commit -a
