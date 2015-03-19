@@ -136,25 +136,25 @@ Otherwise all you have done above becomes nothing.
 
 #Stashing
 
-When you find a bug that is obvious but small enough, like'''cout<<"nama="<<endl;''', you may become crazy if you don''t fix it before continuing your former work. You can use '''git stash''' to save the current work status,  fix that bug and go on with your work.
-'''
+When you find a bug that is obvious but small enough, like```cout<<"nama="<<endl;```, you may become crazy if you don''t fix it before continuing your former work. You can use ```git stash``` to save the current work status,  fix that bug and go on with your work.
+```
 $git stash "work in progress for foo feature"
-'''
+```
 
-This command will store you current change in '''stash''', and reset your work tree?? and match index ??? to the status when you modify the code for the bug. So when you commit the fixed code, a conflict will not happen between the status now and your previous work status.
+This command will store you current change in ```stash```, and reset your work tree?? and match index ??? to the status when you modify the code for the bug. So when you commit the fixed code, a conflict will not happen between the status now and your previous work status.
 
-'''
+```
 $vim src/code.cpp
 ...
 ...
 :wq
 $git commit -a -m "fixed typo bug"
-'''
+```
 
 Then you can go back to you previous work status by:
-'''
+```
 $git stash apply
-'''
+```
 
 It seems that SVN does''nt have that function.
 
@@ -162,15 +162,15 @@ It seems that SVN does''nt have that function.
 You can stash many status.(Always fixing the bugs)
 
 Use this command you can check the stash list:
-'''
+```
 $git stash list
 stash@{0}: WIP on book: 51bea1d... fixed images
 stash@{1}: WIP on master: 9705ae6... changed the browse code to the official repo
-'''
+```
 You also can use this command to go back to the stash you want:
-'''
+```
 $git stash apply stash@{1}
-'''
-and clear stash with command '''git stash clear'''.
+```
+and clear stash with command ```git stash clear```.
 
 
