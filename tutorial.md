@@ -1,19 +1,5 @@
 # git-patch-and-rebase
 
-[Purpose](##purpose)
-
-[Patch](##Patch)
-* [What is patch](###What is patch)
-* [Create patch with git diff](###Create patch with git diff)
-* [Create patch with git format patch](###Create patch with git format patch)
-
-[Rebase](##Rebase)
-* [Inerteractive Rebasing -i](###Inerteractive Rebasing -i)
-* [Interactive Adding](###Interactive Adding)
-* [Stashing](###Stashing)
-* [Stashing Queue](Stashing Queue)
-
-
 ## Purpose
 This tutorial will show you
 * how to create a patch from your recent commits in your repository
@@ -133,7 +119,7 @@ index fe8efa4..544f799 100644
 -- 
 1.9.3 (Apple Git-50)
 ```
-This time, more information are offered! We can tell when and who submitted it, etc.
+This time, more information is offered! We can tell when and who submitted it, etc.
 
 For the patch created by ```git-format-patch```, we have to use ```am``` to apply it.
 ```
@@ -152,75 +138,76 @@ One more line
 ```
 Attention, if there are several commits between master and fix, it will create patch file for every commit.
 
-===
-
 
 
 
 #Rebasing
 
 ##What is Rebasing
-The ```merge``` and the ```rebase``` are the most common ways to integrate from one branch into another in Git. This tutorial will focus on ```rebase`` since ```merge``` have been taught in lab1-git. And you will learn how to do it, why it is a pretty amazing tool and in what cases you won't want to use it.
+The ```merge``` and the ```rebase``` are the most common ways to integrate from one branch into another in Git. This tutorial will focus on ```rebase``` since ```merge``` have been taught in lab1-git. And you will learn how to do it, why it is a pretty amazing tool and in what cases you won't want to use it.
 
-##How to do Rebasing
-Assuming that you creat a branch 'mywork' on your remote branch 'master'.
+##How to Rebase
+Assuming that we creat a branch 'cs100' on your remote branch 'master'.
 
 ```
-$git checkout -b mywork origin
+$git checkout -b cs100 origin
 ```
+![commit 2](https://github.com/jinhangwang/git-patch-and-rebase/blob/master/image/commit2.png)
 
-After switch to it you make some change 
+After switch to it we can make some change 
 
 ```
 $touch file
 $git add file
 $git commit -m "add file"
 ```
+On the same time  your colleague have pulled two requests to origin branch ,which means the `master` and `cs100` will have conflict on each other. It is similiar to the 'Merge conflict' you have encountered in lab1.
 
-On the same time  your colleague have pulled two requests to origin branch ,which means the 'master' and 'mywork'  will have conflict on each other. It is similiar to the 'Merge conflict' you have encountered in lab1.
+![commit 1](https://github.com/jinhangwang/git-patch-and-rebase/blob/master/image/commit1.png)
 
-But merge will creat a new merge commit on 'master' which you dont want to commit. You want to keep the commits on the 'mywork' branch without merge, then you can use git rebase:
+But merge will creat a new merge commit on `master` which you don't want to commit.  
+![commit 3 conflict](https://github.com/jinhangwang/git-patch-and-rebase/blob/master/image/commit3conflict.png)
+
+You want to keep the commits on the `cs100` branch without merge, then you can use git rebase:
 ```
-$git checkout mywork
-$git rebase origin
+$git checkout cs100
+$git rebase master
+First, rewinding head to replay your work on top of it...
+Applying: add file
 ```
 
-This command will save all your commits in 'mywork' under a directory '.git/rebase' in patch format. When you updated origin to "already up-to-date" the patch will patch back to new 'mywork' without leaving merge commits.
+This command will save all your commits in `cs100` under a directory `.git/rebase` in patch format. When we updated origin to "already up-to-date" the patch will patch back to new `cs100` without leaving merge commits.
+The result would be like this:
 
-Once your 'mywork' point to a new commit, the old one will be through away. If you run 
+![commit 4 rebase](https://github.com/jinhangwang/git-patch-and-rebase/blob/master/image/commit4rebase.png)
+
+Or if you find a specific commit on master is you want to rebase on to the result of following command:
 ```
-$git gc
+$ git rebase --onto master~1 master
 ```
-(garbage collection), they may be removed.
+would be:
+
+![commit 4 rebase onto](https://github.com/jinhangwang/git-patch-and-rebase/blob/master/image/commit4rebaseonto.png)
+
+Once `cs100` point to a new commit, the old one will be through away. If you run 
+`$git gc`(garbage collection), they may be removed.
 
 If the rebase process find a conflict, after you fix the conflict, use git add and continue with
-```
-$git rebase --continue
-```
-
-or you want to back to status before rebase, run
-```
-$git rebase --abort
-```
+`$git rebase --continue` or if we want to back to status before rebase, run `$git rebase --abort`.
 
 
 
-##Inerteractive Rebasing -i
+##Inerteractive Rebasing
 Under this mode, you could rewrite your commits before pull request.(If I know this before my first commits, I would not have messed up my commits and had to delete the repo and forked again.) 
 It facilitates you to separate merge and re-order commit and remove commits that you have already pulled to your laptop.
 
-You can add '-i' after git rebase or '--interactive' to apply interactive mode to commit
+You can add `-i` after git rebase or `--interactive` to apply interactive mode to commit
 ```
 $git rebase -i origin/master
-```
 
-Once you run the command, you will turn to edit mode :
-```
-pick fc62e55 added file_size
-pick 9824bf4 fixed little thing
-pick 21d80a5 added number to log
-pick 76b9da6 added the apply command
-pick c264051 Revert "added file_size" - not implemented correctly
+pick fc62e55 added trash1
+pick 9824bf4 added trash2
+pick 21d80a5 added file
 
 # Rebase f408319..b04dc3d onto f408319
 #
@@ -234,53 +221,106 @@ pick c264051 Revert "added file_size" - not implemented correctly
 #
 ```
 
-That is to say, you have five commits and every one follow this format:
+That is to say, we have five commits and every one follow this format:
 ```
 [action][partial-sha][short commit message]
 ```
 
-Now you can change the action (which is 'pick' in default) to 'edit', 'squash' or delete the line that you dont want to push. When you quit the edit mode, git will apply the new commits.
+Now you can change the action (which is `pick` in default) to `edit`, `squash` or delete the line that you don't want to push. When you quit the edit mode, git will apply the new commits.
 
 
 
 ##The Perils of Rebasing
-Ahh, but the bliss of rebasing isn't without its drawbacks, which can be summed up in a single line:
+Rebasing is great, but depends on how you use it. It's not perfect, and will easily induce a lot problem with a few steps. Now we are teaching you how to **destory** other's repository like an expert. 
 
-####Do not rebase commits that exist outside your repository.
+**rebase commits that exist outside one's repository.**
 
-If you follow our guideline, you'll be fine. If you don't, people will hate you, and you'll be scorned by friends and family.
+If you follow our guideline above, the repository will survive, otherwise you'll be cursed by your colleagues and your boss will fire you.
 
-When you rebase stuff, you’re abandoning existing commits and creating new ones that are similar but different. If you push commits somewhere and others pull them down and base work on them, and then you rewrite those commits with```git rebase``` and push them up again, your collaborators will have to re-merge their work and things will get messy when you try to pull their work back into yours.
+When you rebase, you’re throwing away commits in `git log` and creating a similar but different new one. Assuming you have push some commits to the server which your colleagues' work based on, and you modified them with `git rebase` and push them to server again, your partners have to merge their work and the commits will get messy once you want to pull their work.
 
-Let’s look at an example of how rebasing work that you’ve made public can cause problems. Suppose you clone from a central server and then do some work off that. Your commit history looks like this:
+Here is a successful example of destorying a repository by rebasing. Assuming you are pretending to work on a central server and you have fixed some bugs on your computer:
+**(The upper commits are in server and the lower commits are locally)**
 
+![rebase1](https://github.com/jinhangwang/git-patch-and-rebase/blob/master/image/rebase1.png)
+ 
+ Then someone pushes some commits without rebasing to the central server.
+ 
+ ![rebase2](https://github.com/jinhangwang/git-patch-and-rebase/blob/master/image/rebase2.png)
+ 
+ He keeps waiting until his pull your commits to your computer and then use `git rebase` and `git push --force` to modify the commits to make them look clear and pushes the new commit to server.
+ 
+  ![rebase3](https://github.com/jinhangwang/git-patch-and-rebase/blob/master/image/rebase3.png)
 
+Now you are in a pickle that if you use `git pull` to get stuff 'up-to-date', you will creat a merge commit which is exactly same as last commit. Further more, when you use `git push`, you will send commits those are not exist in others git log and creat more confusions.
+
+  ![rebase4](https://github.com/jinhangwang/git-patch-and-rebase/blob/master/image/rebase4.png)
 
 #Stashing
 
-When you find a bug that is obvious but small enough, like```cout<<"nama="<<endl;```, you may become crazy if you don''t fix it before continuing your former work. You can use ```git stash``` to save the current work status,  fix that bug and go on with your work.
-```
-$git stash "work in progress for foo feature"
-```
+Imagine this situation: you just made a commit for a.cpp and are half way developing b.cpp, but you suddenly realize that there is a small mistake in a.cpp.
+If you want to keep your work in b.cpp, you have to make a commit for b.cpp with half-way work and then back to a.cpp and fix the bug. If you back to fix the bug in a.cpp without making the commit for b.cpp, you'll lose all the work in b.cpp since the last commit. 
 
-This command will store you current change in ```stash```, and reset your work tree?? and match index ??? to the status when you modify the code for the bug. So when you commit the fixed code, a conflict will not happen between the status now and your previous work status.
+Stashing is a way to solve this kind of problem -- fix the bug in previous commit without losing your recent work.
 
+Now let's try the stash command:
+Create a.cpp and b.cpp, make a commit for a.cpp and make some development in b.cpp after the commit.
 ```
-$vim src/code.cpp
-...
-...
-:wq
-$git commit -a -m "fixed typo bug"
+$ touch a.cpp
+$ toch b.cpp
+$ vim a.cpp
+$ cat a.cpp
+// hello world
+$ git add a.cpp
+$ git commit -m "helloworld a.cpp"
+[master cd3e990] helloworld a.cpp
+ 1 file changed, 1 insertions(+)
+$ git add b.cpp # suppose b.cpp has already been in the stage in the real situation
+$ echo int main() >> b.cpp
+$ echo { >> b.cpp
+$ echo } >> b.cpp
+$ cat b.cpp
+int main()
+{
+}
 ```
-
-Then you can go back to you previous work status by:
+Now use git stash to interupt the current work and back to the last commit cd3e990:
+```
+$ git stash
+Saved working directory and index state WIP on master: df93074 helloworld a.cpp
+HEAD is now at df93074 helloworld a.cpp
+```
+make some change(fix the bug in a.cpp) and commit it:
+```
+$ echo // a new line in a.cpp to test stash >> a.cpp
+$ cat a.cpp
+// hellow world
+// a new line in a.cpp to test stash
+$ git add a.cpp
+$ git commit -m "add a line in a.cpp"
+[master e495093] add a line in a.cpp
+ 1 file changed, 1 insertion(+)
+```
+Using ```git stash list``` to check your stash status:
+```
+$ git stash list
+stash@{0}: WIP on master: cd3e990 helloworld a.cpp
+```
+Back to the status which updates the develop in a.cpp and keeps the work in b.cpp by ```git stash apply```
 ```
 $git stash apply
+$ cat b.cpp
+int main()
+{
+}
+$ cat a.cpp
+// hellow world
+// a new line in a.cpp
 ```
+just a reminder: it seems that SVN doesn't have that function.
 
-It seems that SVN does''nt have that function.
 
-#Stashing Queue
+####Stashing Queue
 You can stash many status.(Always fixing the bugs)
 
 Use this command you can check the stash list:
@@ -289,7 +329,7 @@ $git stash list
 stash@{0}: WIP on book: 51bea1d... fixed images
 stash@{1}: WIP on master: 9705ae6... changed the browse code to the official repo
 ```
-You also can use this command to go back to the stash you want:
+You can also use this command to go back to the stash you want:
 ```
 $git stash apply stash@{1}
 ```
